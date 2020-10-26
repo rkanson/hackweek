@@ -1,0 +1,4 @@
+PROJECT_NAME: hackweek-gatsby
+DOCKER_PATH: ./sites/node/gatsby-site/ 
+RUN_COMMAND: npm run build
+PORTS: "80:80"

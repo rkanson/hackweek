@@ -1,0 +1,4 @@
+PROJECT_NAME: hackweek-nextjs
+DOCKER_PATH: ./sites/node/nextjs/ 
+RUN_COMMAND: npm run build
+PORTS: "3000:3000"
