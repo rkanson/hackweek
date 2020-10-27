@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hackweek-nextjs
+  name: hackweek-nextjs
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hackweek-nextjs
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: hackweek-nextjs
+    spec:
+      containers:
+        - image: quay.io/rkanson/hackweek-nextjs:latest
+          imagePullPolicy: Always
+          name: hackweek-nextjs
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+      restartPolicy: Always
+
