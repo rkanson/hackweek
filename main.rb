@@ -8,7 +8,7 @@ class String
 end
 
 puts "What type of site are you trying to deploy?".green
-puts "0: GatsbyJS\n1: NextJS".green
+puts "0: GatsbyJS\n1: NextJS\n2: Hugo".green
 template = gets.chomp
 recipe = "./recipes/"
 
@@ -23,6 +23,11 @@ when "1"
   recipe += "/node/next/next.yaml"
   copyCmd = "cp ./recipes/node/next/* ./tmp"
   PORT = 3000
+when "2"
+  puts "Selected Hugo".green
+  recipe += "/go/hugo/hugo.yaml"
+  copyCmd = "cp ./recipes/go/hugo/* ./tmp"
+  PORT = 1313
 else
   abort("Please enter a number from the provided list to select your framework.")
 end
