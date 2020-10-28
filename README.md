@@ -4,5 +4,6 @@ As sites evolve, more and more developers are looking to de-couple their front-e
 
 This project aims to complete the following:
 - Build sites (statically or run the process needed (run node, php, ruby etc)
+  - Run the sites test suite (if possible by task runners like npm) (stretch)
 - Deploy to Kube
 	- Deploy serverless functions (stretch)

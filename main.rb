@@ -8,7 +8,14 @@ class String
 end
 
 puts "What type of site are you trying to deploy?".green
-puts "0: GatsbyJS\n1: NextJS\n2: Hugo".green
+supported = [
+  "0: Gatsby JS",
+  "1: NextJS",
+  "2: Hugo",
+]
+supported.each do |tool|
+  puts tool.green
+end
 template = gets.chomp
 recipe = "./recipes/"
 
@@ -32,7 +39,7 @@ else
   abort("Please enter a number from the provided list to select your framework.")
 end
 
-puts "Please enter the git URL for the repo you want to deploy.".green
+puts "Please enter the GitHub URL for the repo.".green
 repo = gets.chomp
 repo += ".git" unless repo.end_with?(".git")
 
