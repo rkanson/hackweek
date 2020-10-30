@@ -1,12 +1,12 @@
-FROM node:13.8.0 as front
+FROM node:12.19.0 as nodejs
 
 WORKDIR /app
 COPY ./ /app/
 
-RUN yarn install
-RUN yarn run build
+RUN npm install
+RUN npm run build
 
-FROM nginx:1.17.8-alpine
+FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html
-COPY --from=front /app/public/ /usr/share/nginx/html
+COPY --from=nodejs /app/public/ /usr/share/nginx/html
 COPY default.conf /etc/nginx/conf.d/default.conf

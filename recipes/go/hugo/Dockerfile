@@ -1,10 +1,7 @@
-FROM klakegg/hugo:0.76.5-onbuild AS hugo
+FROM klakegg/hugo:alpine
 
-ARG RUNCOMMAND="hugo server"
+WORKDIR /usr/src/app
 
-FROM nginx
-COPY --from=hugo /target /usr/share/nginx/html
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY . .
 
-RUN $RUNCOMMAND
-CMD ["hugo", "server"]
+CMD ["server"]

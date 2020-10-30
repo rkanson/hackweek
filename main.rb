@@ -7,6 +7,12 @@ class String
   end
 end
 
+def cleanup
+  if File.exists?("tmp")
+    FileUtils.remove_dir("tmp")
+  end
+end
+
 puts "What type of site are you trying to deploy?".green
 supported = [
   "0: Gatsby JS",
@@ -17,7 +23,7 @@ supported.each do |tool|
   puts tool.green
 end
 template = gets.chomp
-recipe = "./recipes/"
+recipe = "./recipes"
 
 case template
 when "0"
@@ -36,16 +42,14 @@ when "2"
   copyCmd = "cp ./recipes/go/hugo/* ./tmp"
   PORT = 1313
 else
-  abort("Please enter a number from the provided list to select your framework.")
+  abort("Please enter a number from the provided list to select your framework.").green
 end
 
 puts "Please enter the GitHub URL for the repo.".green
 repo = gets.chomp
 repo += ".git" unless repo.end_with?(".git")
 
-if File.exists?("tmp")
-  FileUtils.remove_dir("tmp")
-end
+cleanup()
 
 system "git clone #{repo} ./tmp"
 system copyCmd
@@ -70,7 +74,15 @@ else
 end
 system finalCmd
 
-puts "Docker build success - committing to quay.io".green
+puts "Docker build completed -- push to Quay/Kubernetes? (y/n)".green
+continue = gets.chomp
+
+if continue != "y"
+  cleanup()
+  abort("Stopping here.").green
+end
+
+puts "Committing to quay.io".green
 dockCommit = %Q[docker commit $(docker ps -aqf "name=#{PROJECT_NAME}") quay.io/rkanson/#{PROJECT_NAME}]
 dockPush = %Q[docker push quay.io/rkanson/#{PROJECT_NAME}]
 # dockCommit = %Q[docker commit $(docker ps -aqf "name=hackweek") quay.io/rkanson/hackweek]
@@ -169,10 +181,12 @@ File.delete("hackweek-service.yaml") if File.exists? "hackweek-service.yaml"
 puts "Restarting pod to deploy latest changes...".green
 
 podName = %Q[kubectl get pods --no-headers -o custom-columns=":metadata.name" | grep '#{PROJECT_NAME}']
-kubeRestart = %Q[kubectl delete pod $(#{podName})]
-system kubeRestart
+if podName.length > 1
+  kubeRestart = %Q[kubectl delete pod $(#{podName})]
+  system kubeRestart
+end
 
 puts "Cleaning up ./tmp folder...".green
-FileUtils.remove_dir("tmp")
+cleanup
 
 puts "Your project should be live shortly at http://#{PROJECT_NAME}.sandbox-rkanson.sbx04.pantheon.io".green
